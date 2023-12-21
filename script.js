@@ -20,6 +20,7 @@ let leftPressed  = false;
 //flags and other attributes
 let gameStart    = false;
 let score        = 0;
+let lives        = 5;
 
 //paddle
 const paddleWidth    = 75;
@@ -91,6 +92,17 @@ function drawScore() {
     ctx.fillText("S C O R E: " + score, 0, 20); 
 }
 
+function drawLives() {
+    ctx.font      =  "20px Arial";
+    ctx.fillStyle = "black";
+    ctx.fillText(
+        "L I V E S: " + lives, 
+        canvas.width - ctx.measureText("L I V E S: " + lives).width,
+        20
+    ); 
+}
+
+
 //main function to render drawing and behavior
 function draw() {
     if (!gameStart) {
@@ -98,7 +110,11 @@ function draw() {
         drawBall();
         drawPaddle();
         drawBricks();
+        drawLives();
         drawScore();
+        ctx.font = '30px Arial';
+        ctx.fillStyle = "#000000";
+        ctx.fillText('PRESS SPACE TO CONTINUE', 55, canvas.height/1.5);
         requestAnimationFrame(draw);
         return;
     }
@@ -108,6 +124,7 @@ function draw() {
     drawBricks();
     brickBallCollision();
     drawScore();
+    drawLives();
 
     ballX += dx;
     ballY += dy;
@@ -129,9 +146,18 @@ function draw() {
             dx = (paddleCenterX - ballX) * (-0.1);
             dy = dy *  -1;
         } else {
+            lives--;
+            paddleX = (canvas.width-paddleWidth)/2;
+            ballX   = canvas.width/2 - ballRadius/2;
+            ballY   = canvas.height  - ballRadius - paddleHeight; 
+            dx      = 4 * [-1, 0, 1][Math.floor(Math.random() * 2)];
+            dy      = -4
+            gameStart = false;
+        }
+
+        if (lives == 0) {
             alert("game over");
             location.reload();
-            return;
         }
     }  
     requestAnimationFrame(draw);  
