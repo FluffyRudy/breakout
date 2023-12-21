@@ -26,7 +26,7 @@ const paddleWidth    = 75;
 const paddleHeight   = 10;
 let   paddleX        = Math.floor((canvas.width - paddleWidth) / 2); 
 let   paddleY        = (canvas.height - paddleHeight);
-let   paddleVelocity = 5;
+let   paddleVelocity = 8;
 let   paddleCenterX  = paddleX + Math.floor(paddleWidth/2);
 let   ballPaddleDist = 0;
 
@@ -34,8 +34,8 @@ let   ballPaddleDist = 0;
 let ballRadius = 10;
 let ballX      = Math.floor((canvas.width  - ballRadius) * 0.5);
 let ballY      = (canvas.height - ballRadius - paddleHeight);
-let dx         = 2 * [-1, 0, 1][Math.floor(Math.random() * 2)];
-let dy         = -2
+let dx         = 4 * [-1, 0, 1][Math.floor(Math.random() * 2)];
+let dy         = -4
 
 //brick
 const brickRowCount    = 6;
@@ -99,6 +99,7 @@ function draw() {
         drawPaddle();
         drawBricks();
         drawScore();
+        requestAnimationFrame(draw);
         return;
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -129,10 +130,11 @@ function draw() {
             dy = dy *  -1;
         } else {
             alert("game over");
-            clearInterval(interval);
-            location.reload()
+            location.reload();
+            return;
         }
-    }    
+    }  
+    requestAnimationFrame(draw);  
 }
 
 function createBricks() {
@@ -163,7 +165,6 @@ function brickBallCollision() {
                 score++;
                 if (score == brickRowCount * brickColumnCount) {
                     alert("You win, CONGRATULATION!");
-                    clearInterval(interval);
                     location.reload();
                 }
             } 
@@ -190,4 +191,5 @@ function keyUpHandler(e) {
 
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
-const interval = setInterval(draw, 10);
+
+draw()
